@@ -21,7 +21,7 @@ jobs:
           aws-region: ap-northeast-1
 
       - name: Deploy
-        uses: ./github/actions/deploy
+        uses: ./.github/actions/deploy
         with:
           ECR_IMAGE:      ${{ github.event.client_payload.ECR_IMAGE }}
           TASK_NAME:      ${{ github.event.client_payload.TASK_NAME }}
