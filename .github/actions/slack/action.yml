@@ -13,51 +13,51 @@ runs:
       with:
         # Slack channel id, channel name, or user id to post message.
         # See also: https://api.slack.com/methods/chat.postMessage#channels
-        channel-id: 'C05F7UGHD9R'
+        channel-id: "C05F7UGHD9R"
         # For posting a rich message using Block Kit
         payload: |
           {
             "attachments": [
               {
-                'text': 'イメージがアップされました。',
-                'fields': [
+                "text": "イメージがアップされました。",
+                "fields": [
                   {
-                    'short': True,
-                    'value': 'svelte-app',
-                    'title': 'Repository'
+                    "short": True,
+                    "value": "svelte-app",
+                    "title": "Repository"
                   },
                   {
-                    'short': True,
-                    'value': '1.0.0',
-                    'title': 'Tag'
+                    "short": True,
+                    "value": "1.0.0",
+                    "title": "Tag"
                   },
                   {
-                    'short': True,
-                    'value': 'app',
-                    'title': 'Service'
+                    "short": True,
+                    "value": "app",
+                    "title": "Service"
                   },
                   {
-                    'short': True,
-                    'value': 'app',
-                    'title': 'Container'
+                    "short": True,
+                    "value": "app",
+                    "title": "Container"
                   },
                 ]
               },
               {
-                'callback_id': 'confirm',
-                'text': 'デプロイしますか？',
-                'actions': [
+                "callback_id": "confirm",
+                "text": "デプロイしますか？",
+                "actions": [
                   {
-                    'text': 'デプロイする',
-                    'type': 'button',
-                    'name': 'deploy',
-                    'value': 'deploy'
+                    "text": "デプロイする",
+                    "type": "button",
+                    "name": "deploy",
+                    "value": "deploy"
                   },
                   {
-                    'text': 'デプロイしない',
-                    'type': 'button',
-                    'name': 'not_deploy',
-                    'value': 'not_deploy'
+                    "text": "デプロイしない",
+                    "type": "button",
+                    "name": "not_deploy",
+                    "value": "not_deploy"
                   },
                 ]
               }
