@@ -22,25 +22,25 @@ runs:
                 "text": "イメージがアップされました。",
                 "fields": [
                   {
-                    "short": True,
+                    "short": true,
                     "value": "svelte-app",
                     "title": "Repository"
                   },
                   {
-                    "short": True,
+                    "short": true,
                     "value": "1.0.0",
                     "title": "Tag"
                   },
                   {
-                    "short": True,
+                    "short": true,
                     "value": "app",
                     "title": "Service"
                   },
                   {
-                    "short": True,
+                    "short": true,
                     "value": "app",
                     "title": "Container"
-                  },
+                  }
                 ]
               },
               {
@@ -58,7 +58,7 @@ runs:
                     "type": "button",
                     "name": "not_deploy",
                     "value": "not_deploy"
-                  },
+                  }
                 ]
               }
             ]
