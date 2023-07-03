@@ -13,3 +13,5 @@ jobs:
 
       - name: post message
         uses: ./.github/actions/slack
+        with:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
