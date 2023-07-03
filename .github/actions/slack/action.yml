@@ -1,5 +1,9 @@
 name: "post slack message"
 description: post slack message
+inputs:
+  SLACK_BOT_TOKEN:
+    description: token
+    required: true
 runs:
   using: composite
   steps:
@@ -25,4 +29,4 @@ runs:
             ]
           }
       env:
-        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        SLACK_BOT_TOKEN: ${{ inputs.SLACK_BOT_TOKEN }}
