@@ -17,14 +17,49 @@ runs:
         # For posting a rich message using Block Kit
         payload: |
           {
-            "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
-            "blocks": [
+            "attachments": [
               {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
-                }
+                'text': 'イメージがアップされました。',
+                'fields': [
+                  {
+                    'short': True,
+                    'value': 'svelte-app',
+                    'title': 'Repository'
+                  },
+                  {
+                    'short': True,
+                    'value': '1.0.0',
+                    'title': 'Tag'
+                  },
+                  {
+                    'short': True,
+                    'value': 'app',
+                    'title': 'Service'
+                  },
+                  {
+                    'short': True,
+                    'value': 'app',
+                    'title': 'Container'
+                  },
+                ]
+              },
+              {
+                'callback_id': 'confirm',
+                'text': 'デプロイしますか？',
+                'actions': [
+                  {
+                    'text': 'デプロイする',
+                    'type': 'button',
+                    'name': 'deploy',
+                    'value': 'deploy'
+                  },
+                  {
+                    'text': 'デプロイしない',
+                    'type': 'button',
+                    'name': 'not_deploy',
+                    'value': 'not_deploy'
+                  },
+                ]
               }
             ]
           }
