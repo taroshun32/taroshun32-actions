@@ -21,8 +21,8 @@ runs:
         --key '{ "repository": { "S": "${{ inputs.ECR_REPOSITORY }}" } }' \
         --query 'Item.[cluster.S,service.S,repository.S]' \
         --output text)
-        echo "CLUSTER=`${1}`" >> $GITHUB_ENV
-        echo "SERVICE=`${2}`" >> $GITHUB_ENV
+        echo "CLUSTER=${1}" >> $GITHUB_ENV
+        echo "SERVICE=${2}" >> $GITHUB_ENV
       env:
         AWS_DEFAULT_REGION: "ap-northeast-1"
 
