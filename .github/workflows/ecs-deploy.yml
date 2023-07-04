@@ -57,7 +57,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "plain_text",
-                    "text": "デプロイを開始しました。\n完了するまでしばらくお待ちください\ntask-definition: ${{ steps.deploy-web-container.outputs.task-definition }}",
+                    "text": "デプロイを開始しました。完了するまでしばらくお待ちください。\ntask-definition: ${{ steps.deploy-web-container.outputs.task-definition-arn }}",
                     "emoji": true
                   }
                 }
