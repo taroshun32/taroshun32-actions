@@ -1,0 +1,24 @@
+name: "dynamodb-scan"
+description: "get ecs-values form dynamodb"
+inputs:
+  REPOSITORY:
+    description: ecr repository name
+    required:    true
+
+runs:
+  using: composite
+  steps:
+    - name:  scan
+      shell: bash
+      run:   |
+        set $(aws dynamodb get-item \
+        --table-name ecs_map \
+        --key '{ "repository": { "S": "${{ inputs.ECR_REPOSITORY }}" } }' \
+        --query 'Item.[account.S,cluster.S,service.S,repository.S,task.S,container.S]' \
+        --output text)
+        echo "ACCOUNT=${1}"    >> $GITHUB_OUTPUT
+        echo "CLUSTER=${2}"    >> $GITHUB_OUTPUT
+        echo "SERVICE=${3}"    >> $GITHUB_OUTPUT
+        echo "REPOSITORY=${4}" >> $GITHUB_OUTPUT
+        echo "TASK=${5}"       >> $GITHUB_OUTPUT
+        echo "CONTAINER=${6}"  >> $GITHUB_OUTPUT
