@@ -44,3 +44,50 @@ jobs:
           cluster:         ${{ env.CLUSTER }}
           service:         ${{ env.SERVICE }}
           task-definition: ${{ steps.render-web-container.outputs.task-definition }}
+
+      - name: Slack post result
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          payload: |
+            {
+              "attachments": [
+                {
+                  "text": "デプロイを開始しました。\n反映されるまでしばらくお待ちください。",
+                  "fields": [
+                    {
+                      "short": true,
+                      "value": "${{ env.ACCOUNT }}",
+                      "title": "Account"
+                    },
+                    {
+                      "short": true,
+                      "value": "${{ env.CLUSTER }}",
+                      "title": "Cluster"
+                    },
+                    {
+                      "short": true,
+                      "value": "${{ env.SERVICE }}",
+                      "title": "Service"
+                    },
+                    {
+                      "short": true,
+                      "value": ${{ steps.render-web-container.outputs.task-definition }},
+                      "title": "TaskDefinition"
+                    },
+                    {
+                      "short": true,
+                      "value": "${{ env.REPOSITORY }}",
+                      "title": "Repository"
+                    },
+                    {
+                      "short": true,
+                      "value": "${{ github.event.client_payload.TAG }}",
+                      "title": "Tag"
+                    },
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
