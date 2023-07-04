@@ -38,7 +38,7 @@ jobs:
                   "fields": [
                     {
                       "short": true,
-                      "value": "${{ env.REPOSITORY }}",
+                      "value": "${{ github.event.client_payload.REPOSITORY }}",
                       "title": "Repository"
                     },
                     {
@@ -48,12 +48,12 @@ jobs:
                     },
                     {
                       "short": true,
-                      "value": "${{ env.SERVICE }}",
+                      "value": "${{ steps.dynamodb-scan.outputs.SERVICE }}",
                       "title": "Service"
                     },
                     {
                       "short": true,
-                      "value": "${{ env.CLUSTER }}",
+                      "value": "${{ steps.dynamodb-scan.outputs.CLUSTER }}",
                       "title": "Container"
                     }
                   ]
@@ -66,7 +66,7 @@ jobs:
                       "text": "デプロイする",
                       "type": "button",
                       "name": "deploy",
-                      "value": "${{ env.REPOSITORY }}:${{ github.event.client_payload.TAG }}"
+                      "value": "${{ steps.dynamodb-scan.outputs.REPOSITORY }}:${{ github.event.client_payload.TAG }}"
                     },
                     {
                       "text": "デプロイしない",
