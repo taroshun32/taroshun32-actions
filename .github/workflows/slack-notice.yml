@@ -52,7 +52,7 @@ jobs:
                     },
                     {
                       "short": true,
-                      "value": "${{ env.CLUSTER }}",
+                      "value": "${{ env.CONTAINER }}",
                       "title": "Container"
                     }
                   ]
