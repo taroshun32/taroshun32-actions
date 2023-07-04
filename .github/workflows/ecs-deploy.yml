@@ -41,13 +41,14 @@ jobs:
       - name:  Get latest of Amazon ECS task definition
         shell: bash
         run:   |
-          ARN=$(aws ecs list-task-definitions \
-          --family-prefix ${{ env.TASK }} \
-          --sort DESC --max-items 1 \
-          --query 'taskDefinitionArns[0]' \
-          --output text)
-          SPLIT=(${ARN/task-definition/ })
+          TASK_ARN=$(aws ecs list-task-definitions --family-prefix ${{ env.TASK }} --sort DESC --max-items 1 --query 'taskDefinitionArns[0]' --output text)
+          SPLIT=(${TASK_ARN/task-definition\// })
           echo "TASK_DEFINITION=${SPLIT[1]}" >> $GITHUB_ENV
+
+      - name: waiting for 10 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '10s'
 
       - name: Slack post start
         uses: slackapi/slack-github-action@v1.24.0
