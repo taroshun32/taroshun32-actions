@@ -1,4 +1,4 @@
-name: "slack-notice"
+name: "slack-confirm"
 
 on:
   repository_dispatch:
