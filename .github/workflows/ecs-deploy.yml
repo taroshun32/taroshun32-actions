@@ -25,6 +25,44 @@ jobs:
         with:
           REPOSITORY: ${{ github.event.client_payload.REPOSITORY }}
 
+      - name: Post image info
+        uses: slackapi/slack-github-action@v1.24.0
+        if:   ${{ github.event.client_payload.FROM_CONFIRM }} != true
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          payload: |
+            {
+              "attachments": [
+                {
+                  "text": "イメージがアップされました。",
+                  "fields": [
+                    {
+                      "short": true,
+                      "value": "${{ env.REPOSITORY }}",
+                      "title": "Repository"
+                    },
+                    {
+                      "short": true,
+                      "value": "${{ github.event.client_payload.TAG }}",
+                      "title": "Tag"
+                    },
+                    {
+                      "short": true,
+                      "value": "${{ env.SERVICE }}",
+                      "title": "Service"
+                    },
+                    {
+                      "short": true,
+                      "value": "${{ env.CONTAINER }}",
+                      "title": "Container"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
       - name:  Download Amazon ECS task definition
         shell: bash
         run:   |
@@ -50,7 +88,7 @@ jobs:
           SPLIT=(${TASK_ARN/task-definition\// })
           echo "TASK_DEFINITION=${SPLIT[1]}" >> $GITHUB_ENV
 
-      - name: Slack post start
+      - name: Post task info
         uses: slackapi/slack-github-action@v1.24.0
         with:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
@@ -90,7 +128,7 @@ jobs:
           task-definition: ${{ steps.render-web-container.outputs.task-definition }}
           wait-for-service-stability: true
 
-      - name: Slack post result
+      - name: Post completion notice
         uses: slackapi/slack-github-action@v1.24.0
         with:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
