@@ -16,9 +16,9 @@ runs:
         --key '{ "repository": { "S": "${{ inputs.REPOSITORY }}" } }' \
         --query 'Item.[account.S,cluster.S,service.S,repository.S,task.S,container.S]' \
         --output text)
-        echo "ACCOUNT=${1}"    >> $GITHUB_OUTPUT
-        echo "CLUSTER=${2}"    >> $GITHUB_OUTPUT
-        echo "SERVICE=${3}"    >> $GITHUB_OUTPUT
-        echo "REPOSITORY=${4}" >> $GITHUB_OUTPUT
-        echo "TASK=${5}"       >> $GITHUB_OUTPUT
-        echo "CONTAINER=${6}"  >> $GITHUB_OUTPUT
+        echo "ACCOUNT=${1}"    >> $GITHUB_ENV
+        echo "CLUSTER=${2}"    >> $GITHUB_ENV
+        echo "SERVICE=${3}"    >> $GITHUB_ENV
+        echo "REPOSITORY=${4}" >> $GITHUB_ENV
+        echo "TASK=${5}"       >> $GITHUB_ENV
+        echo "CONTAINER=${6}"  >> $GITHUB_ENV
