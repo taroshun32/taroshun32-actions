@@ -58,7 +58,18 @@ jobs:
                     }
                   ]
                 }
-              ],
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Post start notice
+        uses: slackapi/slack-github-action@v1.24.0
+        if:   ${{ github.event.client_payload.FROM_CONFIRM != true }}
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          payload: |
+            {
               "blocks": [
                 {
                   "type": "section",
