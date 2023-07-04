@@ -18,7 +18,7 @@ runs:
       run: |
         set $(aws dynamodb get-item \
         --table-name ecs_map \
-        --key '{ "repository": { "S": ${{ inputs.ECR_REPOSITORY }} } }' \
+        --key '{ "repository": { "S": "${{ inputs.ECR_REPOSITORY }}" } }' \
         --query 'Item.[cluster.S,service.S,repository.S]' \
         --output text)
         echo "CLUSTER=`${1}`" >> $GITHUB_ENV
@@ -39,22 +39,22 @@ runs:
                 "fields": [
                   {
                     "short": true,
-                    "value": ${{ inputs.ECR_REPOSITORY }},
+                    "value": "${{ inputs.ECR_REPOSITORY }}",
                     "title": "Repository"
                   },
                   {
                     "short": true,
-                    "value": ${{ inputs.ECR_TAG }},
+                    "value": "${{ inputs.ECR_TAG }}",
                     "title": "Tag"
                   },
                   {
                     "short": true,
-                    "value": ${{ env.SERVICE }},
+                    "value": "${{ env.SERVICE }}",
                     "title": "Service"
                   },
                   {
                     "short": true,
-                    "value": ${{ env.CLUSTER }},
+                    "value": "${{ env.CLUSTER }}",
                     "title": "Container"
                   }
                 ]
