@@ -41,14 +41,13 @@ jobs:
       - name:  Get latest of Amazon ECS task definition
         shell: bash
         run:   |
-          arn=$(aws ecs list-task-definitions \
+          ARN=$(aws ecs list-task-definitions \
           --family-prefix ${{ env.TASK }} \
           --sort DESC --max-items 1 \
           --query 'taskDefinitionArns[0]' \
           --output text)
-          echo arn
-          values=${arn/task-definition/ }
-          echo "TASK_DEFINITION=values[1]" >> $GITHUB_ENV
+          SPLIT=(${ARN/task-definition/ })
+          echo "TASK_DEFINITION=${SPLIT[1]}" >> $GITHUB_ENV
 
       - name: Slack post start
         uses: slackapi/slack-github-action@v1.24.0
@@ -69,7 +68,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "```Cluster: ${{ env.CLUSTER }}\napp-service: ${{ env.SERVICE }}\ntask-definition: ${{ env.TASK_DEFINITION }}```"
+                    "text": "```cluster: ${{ env.CLUSTER }}\nservice: ${{ env.SERVICE }}\ntask-definition: ${{ env.TASK_DEFINITION }}```"
                   }
                 }
               ]
