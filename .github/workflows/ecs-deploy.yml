@@ -27,7 +27,7 @@ jobs:
 
       - name: Post image info
         uses: slackapi/slack-github-action@v1.24.0
-        if:   ${{ github.event.client_payload.FROM_CONFIRM }} != true
+        if:   ${{ github.event.client_payload.FROM_CONFIRM }} != "true"
         with:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
           payload: |
@@ -57,6 +57,15 @@ jobs:
                       "title": "Container"
                     }
                   ]
+                }
+              ],
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "デプロイを開始します。"
+                  }
                 }
               ]
             }
