@@ -44,7 +44,7 @@ jobs:
           set $(aws ecs list-task-definitions \
           --family-prefix ${{ env.TASK }} \
           --sort DESC --max-items 1 \
-          --query 'taskDefinitionArns[0]'\
+          --query 'taskDefinitionArns[0]' \
           --output text)
           echo "TASK_DEFINITION=${${1}/task-definition\// }[1]" >> $GITHUB_ENV
           
