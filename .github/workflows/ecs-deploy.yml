@@ -56,21 +56,25 @@ jobs:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
           payload: |
             {
-              "blocks": [
+              "attachments": [
                 {
-                  "type": "section",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "デプロイを開始しました。完了するまでしばらくお待ちください",
-                    "emoji": true
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "```cluster: ${{ env.CLUSTER }}\nservice: ${{ env.SERVICE }}\ntask-definition: ${{ env.TASK_DEFINITION }}```"
-                  }
+                  "text": "タスクが更新されました。\nデプロイが完了するまでしばらくお待ちください。",
+                  "fields": [
+                    {
+                      "short": true,
+                      "value": "${{ env.CLUSTER }}",
+                      "title": "Cluster"
+                    },
+                    {
+                      "short": true,
+                      "value": "${{ env.SERVICE }}",
+                      "title": "Service"
+                    },
+                    {
+                      "value": "${{ env.TASK_DEFINITION }}",
+                      "title": "Task definition"
+                    }
+                  ]
                 }
               ]
             }
