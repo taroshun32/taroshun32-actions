@@ -29,19 +29,19 @@ jobs:
       - name:  Download Amazon ECS task definition
         shell: bash
         run:   |
-          aws ecs describe-task-definition --task-definition ${{ steps.dynamodb-scan.outputs.TASK }} --query taskDefinition > task-definition.json
+          aws ecs describe-task-definition --task-definition ${{ env.TASK }} --query taskDefinition > task-definition.json
 
       - name: Render Amazon ECS task definition
         id:   render-web-container
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json
-          container-name:  ${{ steps.dynamodb-scan.outputs.CONTAINER }}
-          image:           "${{ steps.dynamodb-scan.outputs.ACCOUNT }}.dkr.ecr.ap-northeast-1.amazonaws.com/${{ steps.dynamodb-scan.outputs.REPOSITORY }}:${{ github.event.client_payload.TAG }}"
+          container-name:  ${{ env.CONTAINER }}
+          image:           "${{ env.ACCOUNT }}.dkr.ecr.ap-northeast-1.amazonaws.com/${{ env.REPOSITORY }}:${{ github.event.client_payload.TAG }}"
 
       - name: Deploy to Amazon ECS service
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          cluster:         ${{ steps.dynamodb-scan.outputs.CLUSTER }}
-          service:         ${{ steps.dynamodb-scan.outputs.SERVICE }}
+          cluster:         ${{ env.CLUSTER }}
+          service:         ${{ env.SERVICE }}
           task-definition: ${{ steps.render-web-container.outputs.task-definition }}
