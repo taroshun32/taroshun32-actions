@@ -4,17 +4,33 @@ inputs:
   SLACK_BOT_TOKEN:
     description: token
     required: true
+  ECR_REPOSITORY:
+    description: repository
+    required: true
+  ECR_TAG:
+    description: tag
+    required: true
 runs:
   using: composite
   steps:
+    - name: Set env from dynamodb
+      shell: bash
+      run: |
+        set $(aws dynamodb get-item \
+        --table-name ecs_map \
+        --key '{ "repository": { "S": ${{ inputs.ECR_REPOSITORY }} } }' \
+        --query 'Item.[cluster.S,service.S,repository.S]' \
+        --output text)
+        echo "CLUSTER=`${1}`" >> $GITHUB_ENV
+        echo "SERVICE=`${2}`" >> $GITHUB_ENV
+      env:
+        AWS_DEFAULT_REGION: "ap-northeast-1"
+
     - name: Post to a Slack channel
       id: slack
       uses: slackapi/slack-github-action@v1.24.0
       with:
-        # Slack channel id, channel name, or user id to post message.
-        # See also: https://api.slack.com/methods/chat.postMessage#channels
         channel-id: "C05F7UGHD9R"
-        # For posting a rich message using Block Kit
         payload: |
           {
             "attachments": [
@@ -23,22 +39,22 @@ runs:
                 "fields": [
                   {
                     "short": true,
-                    "value": "svelte-app",
+                    "value": ${{ inputs.ECR_REPOSITORY }},
                     "title": "Repository"
                   },
                   {
                     "short": true,
-                    "value": "1.0.0",
+                    "value": ${{ inputs.ECR_TAG }},
                     "title": "Tag"
                   },
                   {
                     "short": true,
-                    "value": "app",
+                    "value": ${{ env.SERVICE }},
                     "title": "Service"
                   },
                   {
                     "short": true,
-                    "value": "app",
+                    "value": ${{ env.CLUSTER }},
                     "title": "Container"
                   }
                 ]
