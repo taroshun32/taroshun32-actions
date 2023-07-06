@@ -96,18 +96,6 @@ jobs:
           container-name:  ${{ env.CONTAINER }}
           image:           "${{ env.ACCOUNT }}.dkr.ecr.ap-northeast-1.amazonaws.com/${{ env.REPOSITORY }}:${{ github.event.client_payload.TAG }}"
 
-      - name: waiting for 30 seconds
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '30s'
-
-      - name:  Get latest of Amazon ECS task definition
-        shell: bash
-        run:   |
-          TASK_ARN=$(aws ecs list-task-definitions --family-prefix ${{ env.TASK }} --sort DESC --max-items 1 --query 'taskDefinitionArns[0]' --output text)
-          SPLIT=(${TASK_ARN/task-definition\// })
-          echo "TASK_DEFINITION=${SPLIT[1]}" >> $GITHUB_ENV
-
       - name: Post task info
         uses: slackapi/slack-github-action@v1.24.0
         with:
@@ -129,7 +117,7 @@ jobs:
                       "title": "Service"
                     },
                     {
-                      "value": "${{ env.TASK_DEFINITION }}",
+                      "value": "${{ env.TASK }}",
                       "title": "Task definition"
                     }
                   ]
@@ -148,6 +136,18 @@ jobs:
           task-definition: ${{ steps.render-web-container.outputs.task-definition }}
           wait-for-service-stability: true
 
+      - name: waiting for 10 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '10s'
+
+      - name:  Get latest of Amazon ECS task definition
+        shell: bash
+        run:   |
+          TASK_ARN=$(aws ecs list-task-definitions --family-prefix ${{ env.TASK }} --sort DESC --max-items 1 --query 'taskDefinitionArns[0]' --output text)
+          SPLIT=(${TASK_ARN/task-definition\// })
+          echo "TASK_DEFINITION=${SPLIT[1]}" >> $GITHUB_ENV
+
       - name: Post completion notice
         uses: slackapi/slack-github-action@v1.24.0
         with:
@@ -159,7 +159,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "plain_text",
-                    "text": "デプロイが完了しました。"
+                    "text": "デプロイが完了しました。リビジョン: ${{ env.TASK_DEFINITION }}"
                   }
                 }
               ]
