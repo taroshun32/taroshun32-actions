@@ -28,7 +28,7 @@ jobs:
       - name: Post image info
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          channel-id: ${{ env.CHANNEL }}
           payload: |
             {
               "attachments": [
@@ -65,7 +65,7 @@ jobs:
       - name: Post confirm button
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          channel-id: ${{ env.CHANNEL }}
           payload: |
             {
               "attachments": [

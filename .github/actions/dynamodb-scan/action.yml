@@ -14,7 +14,7 @@ runs:
         set $(aws dynamodb get-item \
         --table-name ecs_map \
         --key '{ "repository": { "S": "${{ inputs.REPOSITORY }}" } }' \
-        --query 'Item.[account.S,cluster.S,service.S,repository.S,task.S,container.S]' \
+        --query 'Item.[account.S,cluster.S,service.S,repository.S,task.S,container.S,channel.S]' \
         --output text)
         echo "ACCOUNT=${1}"    >> $GITHUB_ENV
         echo "CLUSTER=${2}"    >> $GITHUB_ENV
@@ -22,3 +22,4 @@ runs:
         echo "REPOSITORY=${4}" >> $GITHUB_ENV
         echo "TASK=${5}"       >> $GITHUB_ENV
         echo "CONTAINER=${6}"  >> $GITHUB_ENV
+        echo "CHANNEL=${7}"    >> $GITHUB_ENV
