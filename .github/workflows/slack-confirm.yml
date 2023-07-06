@@ -77,7 +77,13 @@ jobs:
                       "text": "デプロイする",
                       "type": "button",
                       "name": "deploy",
-                      "value": "${{ env.REPOSITORY }}:${{ github.event.client_payload.TAG }}"
+                      "value": "${{ env.REPOSITORY }}:${{ github.event.client_payload.TAG }}",
+                      "confirm": {
+                        "title": "最終確認",
+                        "text": "本当にデプロイしますか？",
+                        "ok_text": "はい",
+                        "dismiss_text": "いいえ"
+                      }
                     },
                     {
                       "text": "デプロイしない",
