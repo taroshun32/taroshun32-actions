@@ -84,7 +84,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "plain_text",
-                    "text": "${{ (github.event.client_payload.FROM_CODE == 'direct' && 'デプロイ') || 'rollback' }}を開始します。"
+                    "text": "デプロイを開始します。"
                   }
                 }
               ]
@@ -113,7 +113,7 @@ jobs:
             {
               "attachments": [
                 {
-                  "text": "タスクが更新されました。\n${{ (github.event.client_payload.FROM_CODE != 'rollback' && 'デプロイ') || 'rollback' }}が完了するまでしばらくお待ちください。",
+                  "text": "タスクが更新されました。\n${{ (github.event.client_payload.FROM_CODE != 'rollback' && 'デプロイ') || 'rollback ' }}が完了するまでしばらくお待ちください。",
                   "fields": [
                     {
                       "short": true,
@@ -163,7 +163,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "plain_text",
-                    "text": "${{ (github.event.client_payload.FROM_CODE != 'rollback' && 'デプロイ') || 'rollback' }}が完了しました。リビジョン: ${{ env.TASK_DEFINITION }}"
+                    "text": "${{ (github.event.client_payload.FROM_CODE != 'rollback' && 'デプロイ') || 'rollback ' }}が完了しました。リビジョン: ${{ env.TASK_DEFINITION }}"
                   }
                 }
               ]
