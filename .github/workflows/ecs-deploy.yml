@@ -173,7 +173,7 @@ jobs:
 
       - name: Post rollback button
         uses: slackapi/slack-github-action@v1.24.0
-        if:   ${{ github.event.client_payload.FROM_CODE == 'rollback' }}
+        if:   ${{ github.event.client_payload.FROM_CODE != 'rollback' }}
         with:
           channel-id: ${{ env.CHANNEL }}
           payload: |
