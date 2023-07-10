@@ -29,7 +29,7 @@ jobs:
         shell: bash
         run:   |
           BEFORE_TASK_ARN=$(aws ecs describe-services --cluster ${{ env.CLUSTER }} --services ${{ env.SERVICE }} --query "(services[?serviceName=='${{ env.SERVICE }}'] | [0]).taskDefinition" --output text)
-          BEFORE_REPOSITORY_ARN=$(aws ecs describe-task-definition --task-definition ${BEFORE_TASK_ARN} --query "(taskDefinition.containerDefinitions[?name=='${{ env.CONTAINER }}'] | [0]).image")
+          BEFORE_REPOSITORY_ARN=$(aws ecs describe-task-definition --task-definition ${BEFORE_TASK_ARN} --query "(taskDefinition.containerDefinitions[?name=='${{ env.CONTAINER }}'] | [0]).image" --output text)
           SPLIT=(${BEFORE_REPOSITORY_ARN/amazonaws.com\// })
           echo "BEFORE_REPOSITORY_IMAGE=${SPLIT[1]}" >> $GITHUB_ENV
 
@@ -187,7 +187,7 @@ jobs:
                       "value": "${{ env.BEFORE_REPOSITORY_IMAGE }}",
                       "confirm": {
                         "title": "最終確認",
-                        "text": "本当に rollback しますか？\nECR-image = "${{ env.BEFORE_REPOSITORY_IMAGE }}"",
+                        "text": "本当に rollback しますか？\nECR-image = ${{ env.BEFORE_REPOSITORY_IMAGE }}",
                         "ok_text": "はい",
                         "dismiss_text": "いいえ"
                       }
