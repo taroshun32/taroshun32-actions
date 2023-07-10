@@ -25,6 +25,14 @@ jobs:
         with:
           REPOSITORY: ${{ github.event.client_payload.REPOSITORY }}
 
+      - name:  Get before of Amazon ECR image
+        shell: bash
+        run:   |
+          BEFORE_TASK_ARN=$(aws ecs describe-services --cluster ${{ env.CLUSTER }} --services ${{ env.SERVICE }} --query "(services[?serviceName=='app-service'] | [0]).taskDefinition" --output text)
+          BEFORE_REPOSITORY_ARN=$(aws ecs describe-task-definition --task-definition BEFORE_TASK_ARN --query "(taskDefinition.containerDefinitions[?name==${{ env.CONTAINER }}] | [0]).image")
+          SPLIT=(${BEFORE_REPOSITORY_ARN/amazonaws.com\// })
+          echo "BEFORE_REPOSITORY_IMAGE=${SPLIT[1]}" >> $GITHUB_ENV
+
       - name: Post image info
         uses: slackapi/slack-github-action@v1.24.0
         if:   ${{ github.event.client_payload.FROM_CONFIRM != true }}
@@ -156,6 +164,35 @@ jobs:
                     "type": "plain_text",
                     "text": "デプロイが完了しました。リビジョン: ${{ env.TASK_DEFINITION }}"
                   }
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Post rollback button
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: ${{ env.CHANNEL }}
+          payload: |
+            {
+              "attachments": [
+                {
+                  "callback_id": "confirm",
+                  "actions": [
+                    {
+                      "text": "rollback する",
+                      "type": "button",
+                      "name": "rollback",
+                      "value": "${{ env.BEFORE_REPOSITORY_IMAGE }}",
+                      "confirm": {
+                        "title": "最終確認",
+                        "text": "本当に rollback しますか？\nECR-image = "${{ env.BEFORE_REPOSITORY_IMAGE }}"",
+                        "ok_text": "はい",
+                        "dismiss_text": "いいえ"
+                      }
+                    }
+                  ]
                 }
               ]
             }
