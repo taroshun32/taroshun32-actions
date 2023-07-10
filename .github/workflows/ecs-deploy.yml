@@ -29,7 +29,7 @@ jobs:
         shell: bash
         run:   |
           BEFORE_TASK_ARN=$(aws ecs describe-services --cluster ${{ env.CLUSTER }} --services ${{ env.SERVICE }} --query "(services[?serviceName=='${{ env.SERVICE }}'] | [0]).taskDefinition" --output text)
-          BEFORE_REPOSITORY_ARN=$(aws ecs describe-task-definition --task-definition BEFORE_TASK_ARN --query "(taskDefinition.containerDefinitions[?name=='${{ env.CONTAINER }}'] | [0]).image")
+          BEFORE_REPOSITORY_ARN=$(aws ecs describe-task-definition --task-definition ${BEFORE_TASK_ARN} --query "(taskDefinition.containerDefinitions[?name=='${{ env.CONTAINER }}'] | [0]).image")
           SPLIT=(${BEFORE_REPOSITORY_ARN/amazonaws.com\// })
           echo "BEFORE_REPOSITORY_IMAGE=${SPLIT[1]}" >> $GITHUB_ENV
 
