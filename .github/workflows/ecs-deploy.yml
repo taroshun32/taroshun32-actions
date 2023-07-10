@@ -36,7 +36,7 @@ jobs:
 
       - name: Post image info
         uses: slackapi/slack-github-action@v1.24.0
-        if:   ${{ github.event.client_payload.FROM_CODE != 'direct' }}
+        if:   ${{ github.event.client_payload.FROM_CODE == 'direct' }}
         with:
           channel-id: ${{ env.CHANNEL }}
           payload: |
@@ -74,7 +74,7 @@ jobs:
 
       - name: Post deploy start notice
         uses: slackapi/slack-github-action@v1.24.0
-        if:   ${{ github.event.client_payload.FROM_CODE != 'confirm' }}
+        if:   ${{ github.event.client_payload.FROM_CODE == 'direct' }}
         with:
           channel-id: ${{ env.CHANNEL }}
           payload: |
