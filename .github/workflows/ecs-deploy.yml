@@ -26,6 +26,7 @@ jobs:
           REPOSITORY: ${{ github.event.client_payload.REPOSITORY }}
 
       - name:  Get before of Amazon ECR image
+        if:    ${{ github.event.client_payload.FROM_CODE != rollback }}
         shell: bash
         run:   |
           BEFORE_TASK_ARN=$(aws ecs describe-services --cluster ${{ env.CLUSTER }} --services ${{ env.SERVICE }} --query "(services[?serviceName=='${{ env.SERVICE }}'] | [0]).taskDefinition" --output text)
@@ -35,7 +36,7 @@ jobs:
 
       - name: Post image info
         uses: slackapi/slack-github-action@v1.24.0
-        if:   ${{ github.event.client_payload.FROM_CONFIRM != true }}
+        if:   ${{ github.event.client_payload.FROM_CODE != direct }}
         with:
           channel-id: ${{ env.CHANNEL }}
           payload: |
@@ -71,9 +72,9 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
-      - name: Post start notice
+      - name: Post deploy start notice
         uses: slackapi/slack-github-action@v1.24.0
-        if:   ${{ github.event.client_payload.FROM_CONFIRM != true }}
+        if:   ${{ github.event.client_payload.FROM_CODE != confirm }}
         with:
           channel-id: ${{ env.CHANNEL }}
           payload: |
@@ -83,7 +84,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "plain_text",
-                    "text": "デプロイを開始します。"
+                    "text": "${{ (github.event.client_payload.FROM_CODE == direct && デプロイ) || rollback }}を開始します。"
                   }
                 }
               ]
@@ -112,7 +113,7 @@ jobs:
             {
               "attachments": [
                 {
-                  "text": "タスクが更新されました。\nデプロイが完了するまでしばらくお待ちください。",
+                  "text": "タスクが更新されました。\n${{ (github.event.client_payload.FROM_CODE != rollback && デプロイ) || rollback }}が完了するまでしばらくお待ちください。",
                   "fields": [
                     {
                       "short": true,
@@ -162,7 +163,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "plain_text",
-                    "text": "デプロイが完了しました。リビジョン: ${{ env.TASK_DEFINITION }}"
+                    "text": "${{ (github.event.client_payload.FROM_CODE != rollback && デプロイ) || rollback }}が完了しました。リビジョン: ${{ env.TASK_DEFINITION }}"
                   }
                 }
               ]
@@ -172,13 +173,14 @@ jobs:
 
       - name: Post rollback button
         uses: slackapi/slack-github-action@v1.24.0
+        if:   ${{ github.event.client_payload.FROM_CODE == rollback }}
         with:
           channel-id: ${{ env.CHANNEL }}
           payload: |
             {
               "attachments": [
                 {
-                  "callback_id": "confirm",
+                  "callback_id": "rollback",
                   "text": "以前の image で rollback する場合は以下のボタンを押してください。\nimage = ${{ env.BEFORE_REPOSITORY_IMAGE }}",
                   "actions": [
                     {
