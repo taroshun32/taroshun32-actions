@@ -181,13 +181,13 @@ jobs:
                   "callback_id": "confirm",
                   "actions": [
                     {
-                      "text": "rollback する",
+                      "text": "以前の image で rollback する\nECR-image = ${{ env.BEFORE_REPOSITORY_IMAGE }}",
                       "type": "button",
                       "name": "rollback",
                       "value": "${{ env.BEFORE_REPOSITORY_IMAGE }}",
                       "confirm": {
                         "title": "最終確認",
-                        "text": "本当に rollback しますか？\nECR-image = ${{ env.BEFORE_REPOSITORY_IMAGE }}",
+                        "text": "本当に rollback しますか？",
                         "ok_text": "はい",
                         "dismiss_text": "いいえ"
                       }
