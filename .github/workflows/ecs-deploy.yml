@@ -179,7 +179,7 @@ jobs:
               "attachments": [
                 {
                   "callback_id": "confirm",
-                  "text": "以前の image で rollback する場合は以下のボタンを押下してください。\nECR-image = ${{ env.BEFORE_REPOSITORY_IMAGE }}",
+                  "text": "以前の image で rollback する場合は以下のボタンを押してください。\nimage = ${{ env.BEFORE_REPOSITORY_IMAGE }}",
                   "actions": [
                     {
                       "text": "rollback する",
@@ -188,7 +188,7 @@ jobs:
                       "value": "${{ env.BEFORE_REPOSITORY_IMAGE }}",
                       "confirm": {
                         "title": "最終確認",
-                        "text": "本当に rollback しますか？\nECR-image = ${{ env.BEFORE_REPOSITORY_IMAGE }}",
+                        "text": "本当に rollback しますか？",
                         "ok_text": "はい",
                         "dismiss_text": "いいえ"
                       }
