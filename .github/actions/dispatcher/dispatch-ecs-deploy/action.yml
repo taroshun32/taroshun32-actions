@@ -1,0 +1,36 @@
+name: "dispatch-ecs-deploy"
+description: "dispatch workflow of ecs-deploy"
+inputs:
+  APP_ID:
+    description: github app id
+    required:    true
+  PRIVATE_KEY:
+    description: github private key
+    required:    true
+  REPOSITORY:
+    description: ecr repository name
+    required:    true
+  TAG:
+    description: ecr tag
+    required:    true
+
+runs:
+  using: composite
+  steps:
+    - name:  scan
+      id:    generate_token
+      shell: bash
+      env:
+        APP_ID:      ${{ inputs.APP_ID }}
+        PRIVATE_KEY: ${{ inputs.PRIVATE_KEY }}
+      run: |
+        echo 'ACCESS_TOKEN="$(../request-token.sh)"' >> $GITHUB_OUTPUT
+
+    - name:  dispatch
+      shell: bash
+      run:   |
+        curl -X POST \
+        -H "Authorization: token ${{ steps.generate_token.outputs.token }}" \
+        -H "Accept: application/vnd.github.v3+json" \
+        "https://api.github.com/repos/taroshun32/taroshun32-actions/dispatches" \
+        -d '{"event_type":"ecs-deploy","client_payload":{"REPOSITORY":${{ inputs.REPOSITORY }},"TAG":"${{ inputs.TAG }}","FROM_CODE":"direct"}'
