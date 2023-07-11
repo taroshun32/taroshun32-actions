@@ -24,7 +24,9 @@ runs:
         APP_ID:      ${{ inputs.APP_ID }}
         PRIVATE_KEY: ${{ inputs.PRIVATE_KEY }}
       run: |
-        echo 'ACCESS_TOKEN="$(../request-token.sh)"' >> $GITHUB_OUTPUT
+        TOKEN="$(../generate-token.sh)"
+        echo ${TOKEN}
+        echo 'ACCESS_TOKEN=${TOKEN}' >> $GITHUB_OUTPUT
 
     - name:  dispatch
       shell: bash
