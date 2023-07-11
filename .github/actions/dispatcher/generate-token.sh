@@ -5,7 +5,7 @@ base64url() {
 }
 
 sign() {
-  openssl dgst -binary -sha256 -sign <$(printf '%s' "${PRIVATE_KEY}")
+  openssl dgst -binary -sha256 -sign <"$(printf '%s' "${PRIVATE_KEY}")"
 }
 
 header="$(printf '{"alg":"RS256","typ":"JWT"}' | base64url)"
