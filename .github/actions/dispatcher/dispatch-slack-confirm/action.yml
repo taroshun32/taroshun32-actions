@@ -24,6 +24,8 @@ runs:
         APP_ID:      ${{ inputs.APP_ID }}
         PRIVATE_KEY: ${{ inputs.PRIVATE_KEY }}
       run: |
+        pwd
+        ls
         TOKEN="$(./generate-token.sh)"
         echo ${TOKEN}
         echo 'ACCESS_TOKEN=${TOKEN}' >> $GITHUB_OUTPUT
