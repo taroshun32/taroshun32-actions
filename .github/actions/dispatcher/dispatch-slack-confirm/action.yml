@@ -17,21 +17,30 @@ inputs:
 runs:
   using: composite
   steps:
-    - name:  generate token
+    - name:  Generate GitHub Apps token
       id:    generate_token
       shell: bash
       env:
         APP_ID:      ${{ inputs.APP_ID }}
         PRIVATE_KEY: ${{ inputs.PRIVATE_KEY }}
       run: |
-        TOKEN=$(bash ${{ github.action_path }}/../generate-token.sh)
-        echo "ACCESS_TOKEN=${TOKEN}" >> $GITHUB_OUTPUT
+        bash ${{ github.action_path }}/../generate-token.sh
 
-    - name:  dispatch
+    - name:  Workflow Dispatch
       shell: bash
       run:   |
-        curl -X POST \
-        -H "Authorization: token ${{ steps.generate_token.outputs.ACCESS_TOKEN }}" \
+        curl -s -X POST \
+        -H "Authorization: token ${{ steps.generate_token.outputs.token }}" \
         -H "Accept: application/vnd.github.v3+json" \
         "https://api.github.com/repos/taroshun32/taroshun32-actions/dispatches" \
         -d '{"event_type":"slack-confirm","client_payload":{"REPOSITORY":"${{ inputs.REPOSITORY }}","TAG":"${{ inputs.TAG }}"}'
+
+    - name:  Revoke GitHub Apps token
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ steps.generate.outputs.token }}
+      run: |
+        curl -s -X DELETE \
+        -H "Authorization: Bearer ${{ steps.generate_token.outputs.token }}" \
+        -H "Accept: application/vnd.github.v3+json" \
+        "https://api.github.com/installation/token" \

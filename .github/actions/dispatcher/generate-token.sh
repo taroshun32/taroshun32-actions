@@ -19,17 +19,19 @@ payload="$(printf "${template}" "${APP_ID}" "${iat}" "${exp}" | base64url)"
 signature="$(printf '%s' "${header}.${payload}" | sign | base64url)"
 jwt="${header}.${payload}.${signature}"
 
-installation_id="$(curl -X GET \
+installation_id="$(curl -s -X GET \
   -H "Authorization: Bearer ${jwt}" \
   -H "Accept: application/vnd.github.v3+json" \
   "https://api.github.com/repos/taroshun32/taroshun32-actions/installation" \
   | jq -r '.id'
 )"
 
-token="$(curl -X POST \
+token="$(curl -s -X POST \
   -H "Authorization: Bearer ${jwt}" \
   -H "Accept: application/vnd.github.v3+json" \
   "https://api.github.com/app/installations/${installation_id}/access_tokens" \
   | jq -r '.token'
 )"
-echo "${token}"
+
+echo "::add-mask::${token}"
+echo "token=${token}" >>"${GITHUB_OUTPUT}"
