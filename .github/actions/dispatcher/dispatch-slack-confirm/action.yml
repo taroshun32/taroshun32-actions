@@ -24,7 +24,7 @@ runs:
         APP_ID:      ${{ inputs.APP_ID }}
         PRIVATE_KEY: ${{ inputs.PRIVATE_KEY }}
       run: |
-        TOKEN=$(sh ${{ github.action_path }}/../generate-token.sh)
+        TOKEN=$(bash ${{ github.action_path }}/../generate-token.sh)
         echo "ACCESS_TOKEN=${TOKEN}" >> $GITHUB_OUTPUT
 
     - name:  dispatch
