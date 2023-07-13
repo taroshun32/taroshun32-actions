@@ -19,28 +19,44 @@ jobs:
             {
               "attachments": [
                 {
-                  "text": "Choose a game to play",
-                  "fallback": "If you could read this message, you'd be choosing something fun to do right now.",
-                  "color": "#3AA3E3",
+                  "text": "rollback する場合は以下から image を選択してください。",
                   "attachment_type": "default",
-                  "callback_id": "game_selection",
+                  "callback_id": "rollback",
                   "actions": [
                     {
-                      "name": "games_list",
-                      "text": "Pick a game...",
+                      "name": "rollback",
+                      "text": "select image",
                       "type": "select",
                       "options": [
                         {
-                          "text": "Hearts",
-                          "value": "hearts"
+                          "text": "svelte-app:1.0.0",
+                          "value": "svelte-app:1.0.0",
+                          "confirm": {
+                            "title": "最終確認",
+                            "text": "本当にデプロイしますか？",
+                            "ok_text": "はい",
+                            "dismiss_text": "いいえ"
+                          }
                         },
                         {
                           "text": "Bridge",
-                          "value": "bridge"
+                          "value": "bridge",
+                          "confirm": {
+                            "title": "最終確認",
+                            "text": "本当にデプロイしますか？",
+                            "ok_text": "はい",
+                            "dismiss_text": "いいえ"
+                          }
                         },
                         {
                           "text": "Checkers",
-                          "value": "checkers"
+                          "value": "checkers",
+                          "confirm": {
+                            "title": "最終確認",
+                            "text": "本当にデプロイしますか？",
+                            "ok_text": "はい",
+                            "dismiss_text": "いいえ"
+                          }
                         }
                       ]
                     }
