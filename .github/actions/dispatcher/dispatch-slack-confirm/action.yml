@@ -34,4 +34,4 @@ runs:
         -H "Authorization: token ${{ steps.generate_token.outputs.ACCESS_TOKEN }}" \
         -H "Accept: application/vnd.github.v3+json" \
         "https://api.github.com/repos/taroshun32/taroshun32-actions/dispatches" \
-        -d '{"event_type":"slack-confirm","client_payload":{"REPOSITORY":${{ inputs.REPOSITORY }},"TAG":"${{ inputs.TAG }}"}'
+        -d '{"event_type":"slack-confirm","client_payload":{"REPOSITORY":"${{ inputs.REPOSITORY }}","TAG":"${{ inputs.TAG }}"}'
