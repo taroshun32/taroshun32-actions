@@ -43,4 +43,4 @@ runs:
         curl -s -X DELETE \
         -H "Authorization: Bearer ${{ steps.generate_token.outputs.token }}" \
         -H "Accept: application/vnd.github.v3+json" \
-        "https://api.github.com/installation/token" \
+        "https://api.github.com/installation/token"
