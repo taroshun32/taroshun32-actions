@@ -35,7 +35,7 @@ jobs:
                         },
                       "options": [
                         {
-                          "text": "svelte-app:1.0.0",
+                          "text": "svelte-app:1.0.0 (前回)",
                           "value": "svelte-app:1.0.0",
                           "confirm": {
                             "title": "最終確認",
@@ -45,7 +45,7 @@ jobs:
                           }
                         },
                         {
-                          "text": "Bridge",
+                          "text": "svelte-app:2.0.0",
                           "value": "bridge",
                           "confirm": {
                             "title": "最終確認",
@@ -55,7 +55,7 @@ jobs:
                           }
                         },
                         {
-                          "text": "Checkers",
+                          "text": "svelte-app:3.0.0",
                           "value": "checkers",
                           "confirm": {
                             "title": "最終確認",
