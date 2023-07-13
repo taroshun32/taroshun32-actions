@@ -27,6 +27,12 @@ jobs:
                       "name": "rollback",
                       "text": "select image",
                       "type": "select",
+                      "confirm": {
+                          "title": "最終確認",
+                          "text": "本当にデプロイしますか？",
+                          "ok_text": "はい",
+                          "dismiss_text": "いいえ"
+                        },
                       "options": [
                         {
                           "text": "svelte-app:1.0.0",
