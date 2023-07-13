@@ -17,6 +17,7 @@ jobs:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
           payload: |
             {
+              "replace_original": false,
               "attachments": [
                 {
                   "text": "rollback する場合は以下から image を選択してください。",
