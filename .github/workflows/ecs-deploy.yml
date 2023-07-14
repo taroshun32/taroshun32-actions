@@ -123,7 +123,7 @@ jobs:
                   "fields": [
                     {
                       "value": "${{ env.TASK }}",
-                      "title": "Task definition"
+                      "title": "Task"
                     }
                   ]
                 }
@@ -159,7 +159,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "plain_text",
-                    "text": "デプロイが完了しました。タスクリビジョン: ${{ env.TASK_DEFINITION }}"
+                    "text": "デプロイが完了しました。\nTask Definition: ${{ env.TASK_DEFINITION }}"
                   }
                 }
               ]
@@ -193,7 +193,7 @@ jobs:
                   ]
                 }
               ],
-            "replace_original": false
+              "replace_original": false
             }
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
