@@ -173,7 +173,7 @@ jobs:
           channel-id: ${{ env.CHANNEL }}
           payload: |
             {
-              "replace_original": "false",
+              "replace_original": false,
               "attachments": [
                 {
                   "callback_id": "rollback",
