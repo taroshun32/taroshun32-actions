@@ -37,9 +37,7 @@ runs:
 
     - name:  Revoke GitHub Apps token
       shell: bash
-      env:
-        GITHUB_TOKEN: ${{ steps.generate.outputs.token }}
-      run: |
+      run:   |
         curl -s -X DELETE \
         -H "Authorization: Bearer ${{ steps.generate_token.outputs.token }}" \
         -H "Accept: application/vnd.github.v3+json" \
