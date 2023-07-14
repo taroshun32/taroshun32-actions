@@ -159,7 +159,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "plain_text",
-                    "text": "デプロイが完了しました。\nTask Definition: ${{ env.TASK_DEFINITION }}"
+                    "text": "デプロイが完了しました。\nTask-definition: ${{ env.TASK_DEFINITION }}"
                   }
                 }
               ]
@@ -173,7 +173,7 @@ jobs:
           channel-id: ${{ env.CHANNEL }}
           payload: |
             {
-              "replace_original": false,
+              "replace_original": "false",
               "attachments": [
                 {
                   "callback_id": "rollback",
