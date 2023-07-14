@@ -173,6 +173,7 @@ jobs:
           channel-id: ${{ env.CHANNEL }}
           payload: |
             {
+              "replace_original": false,
               "attachments": [
                 {
                   "callback_id": "rollback",
@@ -192,8 +193,7 @@ jobs:
                     }
                   ]
                 }
-              ],
-              "replace_original": false
+              ]
             }
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
