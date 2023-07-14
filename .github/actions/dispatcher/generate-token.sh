@@ -11,8 +11,8 @@ sign() {
 header="$(printf '{"alg":"RS256","typ":"JWT"}' | base64url)"
 
 now="$(date '+%s')"
-iat="$((now - 60))"
-exp="$((now + (3 * 60)))"
+iat="$((now - 10))"
+exp="$((now + 60))"
 template='{"iss":"%s","iat":%s,"exp":%s}'
 payload="$(printf "${template}" "${APP_ID}" "${iat}" "${exp}" | base64url)"
 

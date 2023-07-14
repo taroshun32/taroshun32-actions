@@ -8,8 +8,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: Production
 
     steps:
       - name: Checkout repo
@@ -27,18 +25,18 @@ jobs:
         with:
           REPOSITORY: ${{ github.event.client_payload.REPOSITORY }}
 
-      - name:  Get before of Amazon ECR image
-        if:    ${{ github.event.client_payload.FROM_CODE != 'rollback' }}
+      - name:  Get Amazon ECR image for rollback
+        id:    image-for-rollback
         shell: bash
         run:   |
-          BEFORE_TASK_ARN=$(aws ecs describe-services --cluster ${{ env.CLUSTER }} --services ${{ env.SERVICE }} --query "(services[?serviceName=='${{ env.SERVICE }}'] | [0]).taskDefinition" --output text)
-          BEFORE_REPOSITORY_ARN=$(aws ecs describe-task-definition --task-definition ${BEFORE_TASK_ARN} --query "(taskDefinition.containerDefinitions[?name=='${{ env.CONTAINER }}'] | [0]).image" --output text)
-          SPLIT=(${BEFORE_REPOSITORY_ARN/amazonaws.com\// })
-          echo "BEFORE_REPOSITORY_IMAGE=${SPLIT[1]}" >> $GITHUB_ENV
+          task_arn=$(aws ecs describe-services --cluster ${{ env.CLUSTER }} --services ${{ env.SERVICE }} --query "(services[?serviceName=='${{ env.SERVICE }}'] | [0]).taskDefinition" --output text)
+          repository_arn=$(aws ecs describe-task-definition --task-definition ${task_arn} --query "(taskDefinition.containerDefinitions[?name=='${{ env.CONTAINER }}'] | [0]).image" --output text)
+          split=(${repository_arn/amazonaws.com\// })
+          echo "image=${split[1]}" >> $GITHUB_OUTPUT
 
-      - name: Post image info
+      - name: Post ECR image info
         uses: slackapi/slack-github-action@v1.24.0
-        if:   ${{ github.event.client_payload.FROM_CODE == 'direct' }}
+        if:   ${{ github.event.client_payload.FROM_CONFIRM != true }}
         with:
           channel-id: ${{ env.CHANNEL }}
           payload: |
@@ -56,16 +54,6 @@ jobs:
                       "short": true,
                       "value": "${{ github.event.client_payload.TAG }}",
                       "title": "Tag"
-                    },
-                    {
-                      "short": true,
-                      "value": "${{ env.SERVICE }}",
-                      "title": "Service"
-                    },
-                    {
-                      "short": true,
-                      "value": "${{ env.CONTAINER }}",
-                      "title": "Container"
                     }
                   ]
                 }
@@ -76,7 +64,7 @@ jobs:
 
       - name: Post deploy start notice
         uses: slackapi/slack-github-action@v1.24.0
-        if:   ${{ github.event.client_payload.FROM_CODE == 'direct' }}
+        if:   ${{ github.event.client_payload.FROM_CONFIRM != true }}
         with:
           channel-id: ${{ env.CHANNEL }}
           payload: |
@@ -105,7 +93,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name:  ${{ env.CONTAINER }}
-          image:           "${{ env.ACCOUNT }}.dkr.ecr.ap-northeast-1.amazonaws.com/${{ env.REPOSITORY }}:${{ github.event.client_payload.TAG }}"
+          image:           ${{ env.ACCOUNT }}.dkr.ecr.ap-northeast-1.amazonaws.com/${{ env.REPOSITORY }}:${{ github.event.client_payload.TAG }}
 
       - name: Post task info
         uses: slackapi/slack-github-action@v1.24.0
@@ -115,18 +103,8 @@ jobs:
             {
               "attachments": [
                 {
-                  "text": "タスクが更新されました。\n${{ (github.event.client_payload.FROM_CODE != 'rollback' && 'デプロイ') || 'rollback ' }}が完了するまでしばらくお待ちください。",
+                  "text": "タスクが更新されました。\nデプロイが完了するまでしばらくお待ちください。",
                   "fields": [
-                    {
-                      "short": true,
-                      "value": "${{ env.CLUSTER }}",
-                      "title": "Cluster"
-                    },
-                    {
-                      "short": true,
-                      "value": "${{ env.SERVICE }}",
-                      "title": "Service"
-                    },
                     {
                       "value": "${{ env.TASK }}",
                       "title": "Task definition"
@@ -165,7 +143,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "plain_text",
-                    "text": "${{ (github.event.client_payload.FROM_CODE != 'rollback' && 'デプロイ') || 'rollback ' }}が完了しました。リビジョン: ${{ env.TASK_DEFINITION }}"
+                    "text": "デプロイが完了しました。タスクリビジョン: ${{ env.TASK_DEFINITION }}"
                   }
                 }
               ]
@@ -175,7 +153,6 @@ jobs:
 
       - name: Post rollback button
         uses: slackapi/slack-github-action@v1.24.0
-        if:   ${{ github.event.client_payload.FROM_CODE != 'rollback' }}
         with:
           channel-id: ${{ env.CHANNEL }}
           payload: |
@@ -183,16 +160,16 @@ jobs:
               "attachments": [
                 {
                   "callback_id": "rollback",
-                  "text": "以前の image で rollback する場合は以下のボタンを押してください。\nimage = ${{ env.BEFORE_REPOSITORY_IMAGE }}",
+                  "text": "直前の ecr-image にロールバックする場合は以下のボタンを押してください。\necr-image = ${{ steps.image-for-rollback.outputs.image }}",
                   "actions": [
                     {
-                      "text": "rollback する",
+                      "text": "ロールバックする",
                       "type": "button",
                       "name": "rollback",
-                      "value": "${{ env.BEFORE_REPOSITORY_IMAGE }}",
+                      "value": "${{ steps.image-for-rollback.outputs.image }}",
                       "confirm": {
                         "title": "最終確認",
-                        "text": "本当に rollback しますか？",
+                        "text": "本当にロールバックしますか？",
                         "ok_text": "はい",
                         "dismiss_text": "いいえ"
                       }

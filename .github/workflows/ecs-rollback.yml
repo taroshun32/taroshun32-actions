@@ -1,0 +1,97 @@
+name: "ecs-rollback"
+
+on:
+  repository_dispatch:
+    types:
+      - ecs-rollback
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    environment:
+      name: Production
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ap-northeast-1
+
+      - name: Dynamodb scan
+        uses: ./.github/actions/dynamodb-scan
+        with:
+          REPOSITORY: ${{ github.event.client_payload.REPOSITORY }}
+
+      - name:  Download Amazon ECS task definition
+        shell: bash
+        run:   |
+          aws ecs describe-task-definition --task-definition ${{ env.TASK }} --query taskDefinition > task-definition.json
+
+      - name: Render Amazon ECS task definition
+        id:   render-web-container
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name:  ${{ env.CONTAINER }}
+          image:           ${{ env.ACCOUNT }}.dkr.ecr.ap-northeast-1.amazonaws.com/${{ env.REPOSITORY }}:${{ github.event.client_payload.TAG }}
+
+      - name: Post task info
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: ${{ env.CHANNEL }}
+          payload: |
+            {
+              "attachments": [
+                {
+                  "text": "タスクが更新されました。\nロールバックが完了するまでしばらくお待ちください。",
+                  "fields": [
+                    {
+                      "value": "${{ env.TASK }}",
+                      "title": "Task definition"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Deploy to Amazon ECS service
+        id:   deploy-web-container
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          cluster:         ${{ env.CLUSTER }}
+          service:         ${{ env.SERVICE }}
+          task-definition: ${{ steps.render-web-container.outputs.task-definition }}
+          wait-for-service-stability: true
+
+      - name:  Get latest of Amazon ECS task definition
+        shell: bash
+        run:   |
+          TASK_ARN=$(aws ecs list-task-definitions --family-prefix ${{ env.TASK }} --sort DESC --max-items 1 --query 'taskDefinitionArns[0]' --output text)
+          SPLIT=(${TASK_ARN/task-definition\// })
+          echo "TASK_DEFINITION=${SPLIT[1]}" >> $GITHUB_ENV
+
+      - name: Post completion notice
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: ${{ env.CHANNEL }}
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "ロールバックが完了しました。タスクリビジョン: ${{ env.TASK_DEFINITION }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

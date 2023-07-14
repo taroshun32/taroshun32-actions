@@ -6,7 +6,7 @@ on:
       - slack-confirm
 
 jobs:
-  slack:
+  confirm:
     runs-on: ubuntu-latest
 
     steps:
@@ -44,16 +44,6 @@ jobs:
                       "short": true,
                       "value": "${{ github.event.client_payload.TAG }}",
                       "title": "Tag"
-                    },
-                    {
-                      "short": true,
-                      "value": "${{ env.SERVICE }}",
-                      "title": "Service"
-                    },
-                    {
-                      "short": true,
-                      "value": "${{ env.CONTAINER }}",
-                      "title": "Container"
                     }
                   ]
                 }
