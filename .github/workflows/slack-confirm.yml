@@ -25,6 +25,21 @@ jobs:
         with:
           REPOSITORY: ${{ github.event.client_payload.REPOSITORY }}
 
+      - name: Divider
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: ${{ env.CHANNEL }}
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "divider"
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
       - name: Post image info
         uses: slackapi/slack-github-action@v1.24.0
         with:
